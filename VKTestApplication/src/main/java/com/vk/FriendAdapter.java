@@ -32,6 +32,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
         return new ViewHolder(v, new ViewHolder.IMyViewHolderClicks() {
             public void onPotato(View caller) {
                 Toast.makeText(v.getContext(), "view", Toast.LENGTH_SHORT).show();
+
             }
 
             public void onTomato(ImageView callerImage) {

@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -54,6 +55,7 @@ public class FriendActivity extends ActionBarActivity {
         rec.setHasFixedSize(true);
         rec.setLayoutManager(new LinearLayoutManager(this));
         rec.setItemAnimator(new DefaultItemAnimator());
+
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToRecyclerView(rec);
@@ -178,16 +180,5 @@ public class FriendActivity extends ActionBarActivity {
         super.onDestroy();
         myRequest.cancel();
         Log.d(VKSdk.SDK_TAG, "On destroy");
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -13,10 +13,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
@@ -67,7 +65,7 @@ public class TestActivity extends ActionBarActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                     //   Toast.makeText(TestActivity.this, userIsVk ? "user is vk's" : "user is not vk's", Toast.LENGTH_SHORT).show();
+                        //   Toast.makeText(TestActivity.this, userIsVk ? "user is vk's" : "user is not vk's", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -78,15 +76,6 @@ public class TestActivity extends ActionBarActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -252,7 +241,7 @@ public class TestActivity extends ActionBarActivity {
         }
 
         private void startFriendActivity(VKRequest request) {
-            Intent i = new Intent(getActivity(), FriendActivity.class);
+            Intent i = new Intent(getActivity(), FriendLVActivity.class);
             i.putExtra("request", request.registerObject());
             startActivity(i);
         }
