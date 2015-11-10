@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -59,10 +58,8 @@ public class FriendLVActivity extends ActionBarActivity {
     private VKRequest myRequest;
     CharSequence[] vkApiUsersNames;
 
-    private static final String FRAGMENT_TAG = "response_view";
     FloatingActionButton fab;
     ArrayList<Contact> profileFriends;
-    RecyclerView rec;
     ContentLoadingProgressBar progressBar;
 
     @Override
@@ -75,6 +72,7 @@ public class FriendLVActivity extends ActionBarActivity {
         if (savedInstanceState == null) {
             processRequestIfRequired();
         }
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mListView = (PinnedHeaderListView) findViewById(android.R.id.list);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -106,7 +104,7 @@ public class FriendLVActivity extends ActionBarActivity {
 
     public void setAdapter() {
         progressBar.hide();
-        final ArrayList<Contact> contacts = profileFriends;
+       final ArrayList<Contact> contacts = profileFriends;
         Collections.sort(contacts, new Comparator<Contact>() {
             @Override
             public int compare(Contact lhs, Contact rhs) {
@@ -221,6 +219,7 @@ public class FriendLVActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i = new Intent(this, FriendActivity.class);
@@ -288,21 +287,26 @@ public class FriendLVActivity extends ActionBarActivity {
             final String displayName = contact.displayName;
             holder.friendName.setText(displayName);
 
+            if (contact.displayName.contains("Артём")) {
+                contact.displayName.split("");
+            }
             if (contact.online) {
                 if (contact.monline) {
                     holder.onlineImage.setImageResource(R.drawable.phone);
                 } else {
                     holder.onlineImage.setImageResource(R.drawable.co);
                 }
+            } else {
+                holder.onlineImage.setImageResource(0);
             }
 
             boolean hasPhoto = !TextUtils.isEmpty(contact.photoId);
             if (holder.updateTask != null && !holder.updateTask.isCancelled())
                 holder.updateTask.cancel(true);
             final Bitmap cachedBitmap = hasPhoto ? ImageCache.INSTANCE.getBitmapFromMemCache(contact.photoId) : null;
-            if (cachedBitmap != null)
-                holder.friendProfileCircularContactView.setImageBitmap(cachedBitmap);
-            else {
+            if (!contact.image.contains("deact")) {
+                holder.friendProfileCircularContactView.loadBitmap(FriendLVActivity.this, contact.image);
+            } else {
                 final int backgroundColorToUse = PHOTO_TEXT_BACKGROUND_COLORS[position
                         % PHOTO_TEXT_BACKGROUND_COLORS.length];
                 if (TextUtils.isEmpty(displayName))
@@ -338,6 +342,7 @@ public class FriendLVActivity extends ActionBarActivity {
                     mAsyncTaskThreadPool.executeAsyncTask(holder.updateTask);
                 }
             }
+
             bindSectionHeader(holder.headerView, null, position);
             return rootView;
         }
@@ -388,7 +393,7 @@ public class FriendLVActivity extends ActionBarActivity {
         @Override
         public void onComplete(VKResponse response) {
             //setResponseText(response.json.toString());
-            //  progressBar.hide();
+            progressBar.show();
             JSONArray jsonArray = null;
             try {
                 jsonArray = response.json.getJSONObject("response").getJSONArray("items");
@@ -396,14 +401,11 @@ public class FriendLVActivity extends ActionBarActivity {
                 int length = jsonArray.length();
                 // vkApiUsers = new VKApiUser[length];
                 vkApiUsersNames = new CharSequence[length];
-                StringBuilder sb = new StringBuilder();
 
                 for (int i = 0; i < length; i++) {
                     VKApiUser user = new VKApiUser(jsonArray.getJSONObject(i));
                     vkApiUsersNames[i] = user.first_name + " " + user.last_name;
                     // + " " + ((user.sex == 1) ? "Female" : "Male");
-                    sb.append(vkApiUsersNames[i]);
-                    sb.append("\n");
                     profileFriends.add(new Contact(vkApiUsersNames[i].toString(), user.photo_50, user.online, user.online_mobile));
                 }
                 setAdapter();

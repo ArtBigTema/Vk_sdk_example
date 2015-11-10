@@ -112,7 +112,8 @@ public class TestActivity extends ActionBarActivity {
                 break;
                 case R.id.friends_get:
                     // startApiCall(VKApi.friends().get(VKParameters.from(VKApiConst.FIELDS, "id,first_name,last_name,sex,bdate,city")));
-                    startFriendActivity(VKApi.friends().get(VKParameters.from(VKApiConst.FIELDS, "id,first_name,last_name,sex,bdate,city")));
+                    startFriendActivity(VKApi.friends().get(VKParameters.from(VKApiConst.FIELDS,
+                            "id,first_name,last_name,sex,bdate,online_mobile,online,city,photo_50,photo_100,photo_200_orig")));
 
                     break;
                 case R.id.messages_get:
