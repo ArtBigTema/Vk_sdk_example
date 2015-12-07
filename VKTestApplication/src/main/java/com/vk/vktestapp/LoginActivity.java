@@ -1,24 +1,21 @@
 package com.vk.vktestapp;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
+import com.perm.kate.api.Account;
+import com.perm.kate.api.Api;
+import com.perm.kate.api.Constants;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
-import org.achartengine.ChartFactory;
-import org.achartengine.model.CategorySeries;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -40,13 +37,22 @@ public class LoginActivity extends FragmentActivity {
             VKScope.PHOTOS,
             VKScope.NOHTTPS,
             VKScope.MESSAGES,
-            VKScope.DOCS
+            VKScope.DOCS//,
+            // VKScope.Maps
     };
+    Account account = new Account();
+    Api api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+        //Восстановление сохранённой сессии
+        account.restore(this);
+
+        //Если сессия есть создаём API для обращения к серверу
+        if (account.access_token != null)
+            api = new Api(account.access_token, Constants.API_ID);
 
         VKSdk.wakeUpSession(this, new VKCallback<VKSdk.LoginState>() {
             @Override
@@ -73,8 +79,8 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-//        String[] fingerprint = VKUtil.getCertificateFingerprint(this, this.getPackageName());
-//        Log.d("Fingerprint", fingerprint[0]);
+        //    String[] fingerprint = VKUtil.getCertificateFingerprint(this, this.getPackageName());
+        //   Log.d("Fingerprint", fingerprint[0]);
     }
 
     private void showLogout() {
@@ -100,7 +106,6 @@ public class LoginActivity extends FragmentActivity {
         } else {
             showLogin();
         }
-      //  openChart();
     }
 
 
@@ -109,7 +114,6 @@ public class LoginActivity extends FragmentActivity {
         isResumed = false;
         super.onPause();
     }
-
 
 
     @Override
@@ -123,6 +127,10 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 // User passed Authorization
+                account.access_token = res.accessToken;
+                account.user_id = Long.parseLong(res.userId);
+                account.save(LoginActivity.this);
+                api = new Api(account.access_token, Constants.API_ID);
                 startTestActivity();
             }
 

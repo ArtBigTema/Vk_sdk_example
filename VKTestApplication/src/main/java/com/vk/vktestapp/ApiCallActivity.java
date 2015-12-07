@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.VKRequest.VKRequestListener;
 import com.vk.sdk.api.VKResponse;
+
 
 public class ApiCallActivity extends ActionBarActivity {
 
@@ -89,7 +89,7 @@ public class ApiCallActivity extends ActionBarActivity {
     }
 
 
-    VKRequestListener mRequestListener = new VKRequestListener() {
+    VKRequest.VKRequestListener mRequestListener = new VKRequest.VKRequestListener() {
         @Override
         public void onComplete(VKResponse response) {
             setResponseText(response.json.toString());

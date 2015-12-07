@@ -104,7 +104,8 @@ public class FriendLVActivity extends ActionBarActivity {
 
     public void setAdapter() {
         progressBar.hide();
-       final ArrayList<Contact> contacts = profileFriends;
+        //s  final ArrayList<Contact> contacts = getContacts();
+        final ArrayList<Contact> contacts = profileFriends;
         Collections.sort(contacts, new Comparator<Contact>() {
             @Override
             public int compare(Contact lhs, Contact rhs) {
@@ -120,8 +121,8 @@ public class FriendLVActivity extends ActionBarActivity {
         mAdapter.setPinnedHeaderBackgroundColor(getResources().getColor(getResIdFromAttribute(this, android.R.attr.colorBackground)));
         mAdapter.setPinnedHeaderTextColor(getResources().getColor(R.color.pinned_header_text));
         mListView.setAdapter(mAdapter);
-        mListView.setOnScrollListener(mAdapter);
-        fab.attachToListView(mListView);
+       /* mListView.setOnScrollListener(mAdapter);
+        fab.attachToListView(mListView);*/
     }
 
     public static int getResIdFromAttribute(final Activity activity, final int attr) {
@@ -144,6 +145,9 @@ public class FriendLVActivity extends ActionBarActivity {
                 contact.contactUri = ContactsContract.Contacts.getLookupUri(
                         cursor.getLong(ContactsQuery.ID),
                         cursor.getString(ContactsQuery.LOOKUP_KEY));
+                contact.image = ContactsContract.Contacts.getLookupUri(
+                        cursor.getLong(ContactsQuery.ID),
+                        cursor.getString(ContactsQuery.LOOKUP_KEY)).toString();
                 contact.displayName = cursor.getString(ContactsQuery.DISPLAY_NAME);
                 contact.photoId = cursor.getString(ContactsQuery.PHOTO_THUMBNAIL_DATA);
                 result.add(contact);
@@ -222,9 +226,7 @@ public class FriendLVActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i = new Intent(this, FriendActivity.class);
-        i.putExtra("request", myRequest.registerObject());
-        startActivity(i);
+
         return true;
     }
 
@@ -287,9 +289,6 @@ public class FriendLVActivity extends ActionBarActivity {
             final String displayName = contact.displayName;
             holder.friendName.setText(displayName);
 
-            if (contact.displayName.contains("Артём")) {
-                contact.displayName.split("");
-            }
             if (contact.online) {
                 if (contact.monline) {
                     holder.onlineImage.setImageResource(R.drawable.phone);
@@ -367,10 +366,10 @@ public class FriendLVActivity extends ActionBarActivity {
     // /////////////////////////////////////////////////////////////////////////////////////
     // ViewHolder //
     // /////////////
-    private static class ViewHolder {
+    public static class ViewHolder {
         public CircularContactView friendProfileCircularContactView;
         public ImageView onlineImage;
-        TextView friendName, headerView;
+        public TextView friendName, headerView;
         public AsyncTaskEx<Void, Void, Bitmap> updateTask;
     }
 

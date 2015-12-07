@@ -11,4 +11,18 @@
     <string name="all_my_repositories">All my repositories</string>
     <string name="all_my_apps">All my apps</string>
     <string name="more_info">More info</string>
+
+    <string name="et_find_group">Введите адрес группы или название</string>
+    <string name="et_find_me">Введите ключевые слова о себе</string>
+    <string name="et_find_group_example">Признания Самара</string>
+
+    <string name="vk_name">VK</string>
+    <string name="vk_enter_captcha_text">Enter captcha text here</string>
+    <string name="vk_retry">Retry</string>
+    <string name="vk_send">SEND</string>
+    <string name="vk_share">Share</string>
+    <string name="vk_new_message_text">Enter your message..</string>
+    <string name="vk_new_post_settings">Post settings</string>
+
+
 </resources>

@@ -16,15 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.vk.google.map.MapsActivity;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKBatchRequest;
-import com.vk.sdk.api.VKBatchRequest.VKBatchRequestListener;
 import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.VKRequest.VKRequestListener;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.methods.VKApiCaptcha;
 import com.vk.sdk.api.model.VKApiPhoto;
@@ -45,12 +44,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import group.finder.FindMe;
+
 public class TestActivity extends ActionBarActivity {
 
     private static final int[] IDS = {R.id.users_get, R.id.friends_get, R.id.messages_get, R.id.dialogs_get,
             R.id.captcha_force, R.id.upload_photo, R.id.wall_post, R.id.wall_getById, R.id.test_validation,
             R.id.test_share, R.id.upload_photo_to_wall, R.id.upload_doc, R.id.upload_several_photos_to_wall,
-            R.id.test_send_request};
+            R.id.test_send_request, R.id.maps, R.id.find_me_get};
 
     public static final int TARGET_GROUP = 60479154;
     public static final int TARGET_ALBUM = 181808365;
@@ -128,7 +129,7 @@ public class TestActivity extends ActionBarActivity {
                 case R.id.upload_photo: {
                     final Bitmap photo = getPhoto();
                     VKRequest request = VKApi.uploadAlbumPhotoRequest(new VKUploadImage(photo, VKImageParameters.pngImage()), TARGET_ALBUM, TARGET_GROUP);
-                    request.executeWithListener(new VKRequestListener() {
+                    request.executeWithListener(new VKRequest.VKRequestListener() {
                         @Override
                         public void onComplete(VKResponse response) {
                             recycleBitmap(photo);
@@ -186,7 +187,7 @@ public class TestActivity extends ActionBarActivity {
                 case R.id.upload_photo_to_wall: {
                     final Bitmap photo = getPhoto();
                     VKRequest request = VKApi.uploadWallPhotoRequest(new VKUploadImage(photo, VKImageParameters.jpgImage(0.9f)), 0, TARGET_GROUP);
-                    request.executeWithListener(new VKRequestListener() {
+                    request.executeWithListener(new VKRequest.VKRequestListener() {
                         @Override
                         public void onComplete(VKResponse response) {
                             recycleBitmap(photo);
@@ -212,7 +213,7 @@ public class TestActivity extends ActionBarActivity {
                     VKRequest request4 = VKApi.uploadWallPhotoRequest(new VKUploadImage(photo, VKImageParameters.pngImage()), 0, TARGET_GROUP);
 
                     VKBatchRequest batch = new VKBatchRequest(request1, request2, request3, request4);
-                    batch.executeWithListener(new VKBatchRequestListener() {
+                    batch.executeWithListener(new VKBatchRequest.VKBatchRequestListener() {
                         @Override
                         public void onComplete(VKResponse[] responses) {
                             super.onComplete(responses);
@@ -232,7 +233,19 @@ public class TestActivity extends ActionBarActivity {
                     });
                 }
                 break;
+                case R.id.maps: {
+                    startMaps();
+                }
+                break;
+                case R.id.find_me_get: {
+                    startFindMeActivity();
+                }
             }
+        }
+
+        private void startMaps() {
+            Intent i = new Intent(getActivity(), MapsActivity.class);
+            startActivity(i);
         }
 
         private void startApiCall(VKRequest request) {
@@ -243,7 +256,12 @@ public class TestActivity extends ActionBarActivity {
 
         private void startFriendActivity(VKRequest request) {
             Intent i = new Intent(getActivity(), FriendLVActivity.class);
-            i.putExtra("request", request.registerObject());
+           i.putExtra("request", request.registerObject());
+            startActivity(i);
+        }
+
+        private void startFindMeActivity() {
+            Intent i = new Intent(getActivity(), FindMe.class);
             startActivity(i);
         }
 
@@ -292,13 +310,15 @@ public class TestActivity extends ActionBarActivity {
             return null;
         }
 
+
         private void makePost(VKAttachments attachments) {
             makePost(attachments, null);
         }
 
+
         private void makeRequest() {
             VKRequest request = new VKRequest("apps.getFriendsList", VKParameters.from("extended", 1, "type", "request"));
-            request.executeWithListener(new VKRequestListener() {
+            request.executeWithListener(new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
                     final Context context = getContext();
@@ -334,7 +354,7 @@ public class TestActivity extends ActionBarActivity {
         private void makePost(VKAttachments attachments, String message) {
             VKRequest post = VKApi.wall().post(VKParameters.from(VKApiConst.OWNER_ID, "-" + TARGET_GROUP, VKApiConst.ATTACHMENTS, attachments, VKApiConst.MESSAGE, message));
             post.setModelClass(VKWallPostResult.class);
-            post.executeWithListener(new VKRequestListener() {
+            post.executeWithListener(new VKRequest.VKRequestListener() {
                 @Override
                 public void onComplete(VKResponse response) {
                     if (isAdded()) {

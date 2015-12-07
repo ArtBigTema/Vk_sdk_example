@@ -11,6 +11,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".LoginActivity"
             android:windowSoftInputMode="adjustResize">
@@ -30,20 +31,21 @@
         </activity>
         <activity
             android:name="lb.listviewvariants.MainActivity"
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name" />
         <activity
             android:name=".FriendLVActivity"
             android:label="@string/app_name">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".TestActivity" />
         <activity android:name=".ApiCallActivity" />
-        <activity android:name=".FriendActivity" />
         <activity
             android:name="com.vk.infographic.InfoGraphicFriendActivity"
-            android:label="@string/title_activity_info_graphic_friend"></activity>
+            android:label="@string/title_activity_info_graphic_friend" />
+        <activity
+            android:name="com.vk.google.map.MapsActivity"
+            android:label="@string/app_name">
+        </activity>
+        <activity android:name="group.finder.FindMe"></activity>
     </application>
 
 </manifest>
